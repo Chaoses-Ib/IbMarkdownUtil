@@ -43,7 +43,7 @@ class ToC:
         A/B/C/README.md:
             # C
             - [Renamed page 1](Renamed%20page%201.md)
-            - [Newly added page 2](Page%201.md)
+            - [Newly added page 2](Page%202.md)
         A/B/README.md:
             # B
             - ...
@@ -67,7 +67,7 @@ class ToC:
             - ...
             - [C](C/README.md)
               - [Renamed page 1](C/Renamed%20page%201.md)
-              - [Newly added page 2](C/Page%201.md)
+              - [Newly added page 2](C/Page%202.md)
             - ...
         A/README.md:
             # A
@@ -76,7 +76,7 @@ class ToC:
               - ...
               - [C](B/C/README.md)
                 - [Renamed page 1](B/C/Renamed%20page%201.md)
-                - [Newly added page 2](B/C/Page%201.md)
+                - [Newly added page 2](B/C/Page%202.md)
               - ...
             - ...
         ```

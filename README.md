@@ -10,7 +10,7 @@ Before lifting:
     ```md
     # C
     - [Renamed page 1](Renamed%20page%201.md)
-    - [Newly added page 2](Page%201.md)
+    - [Newly added page 2](Page%202.md)
     ```
 - A/B/README.md:
     ```md
@@ -37,8 +37,8 @@ After lifting the ToC of A/B/C/README.md by executing `mdutil toc lift A/B/C/REA
     # B
     - ...
     - [C](C/README.md)
-        - [Renamed page 1](C/Renamed%20page%201.md)
-        - [Newly added page 2](C/Page%201.md)
+      - [Renamed page 1](C/Renamed%20page%201.md)
+      - [Newly added page 2](C/Page%202.md)
     - ...
     ```
 - A/README.md:
@@ -49,7 +49,7 @@ After lifting the ToC of A/B/C/README.md by executing `mdutil toc lift A/B/C/REA
       - ...
       - [C](B/C/README.md)
         - [Renamed page 1](B/C/Renamed%20page%201.md)
-        - [Newly added page 2](B/C/Page%201.md)
+        - [Newly added page 2](B/C/Page%202.md)
       - ...
     - ...
     ```
