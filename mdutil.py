@@ -91,7 +91,10 @@ class ToC:
         with open(parent, 'r', encoding='utf8') as f:
             content = f.read()
 
-            title = content.splitlines()[0].removeprefix('# ')
+            try:
+                title = content.splitlines()[0].removeprefix('# ')
+            except IndexError:
+                raise RuntimeError(f'"{parent}" is empty, check if you have saved it')
 
             toc = find_toc(content)
             if toc is None:
@@ -121,7 +124,10 @@ class ToC:
                     else:
                         print(f'Cannot find ToC in "{ancestor}", trying to append after the title')
 
-                        title_len = len(content.splitlines()[0])
+                        try:
+                            title_len = len(content.splitlines()[0])
+                        except IndexError:
+                            title_len = 0
                         toc_segment = slice(title_len, title_len)
                     toc_indent = toc_indent + '  '
                     newline = '\n'
