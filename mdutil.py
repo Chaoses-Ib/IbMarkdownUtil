@@ -27,7 +27,7 @@ def md_parents(path):
         else:
             return
 
-def extract_toc(content):
+def find_toc(content):
     return re.search(r'^[-*] +\[[^\]]+\]\([^\)]+\.md\)[\S\s]*?(?=\n\n|^# |\Z)', content, re.MULTILINE)
 
 def find_toc_segment(content, path):
@@ -93,23 +93,42 @@ class ToC:
 
             title = content.splitlines()[0].removeprefix('# ')
 
-            toc = extract_toc(content)
+            toc = find_toc(content)
             if toc is None:
-                raise RuntimeError(f'Cannot extract TOC in "{parent}"')
+                raise RuntimeError(f'Cannot find ToC in "{parent}"')
             toc = toc[0]
 
             toc = f'- [{title}]({encode_path(parent.name)})\n' + prefix_each_line(toc, '  ')  #TODO: custom list characters and indentation
 
+        toc_indent = ''
         for ancestor in it:
             with open(ancestor, 'r+', encoding='utf8') as f:
                 content = f.read()
-                toc_segment = find_toc_segment(content, parent.relative_to(ancestor.parent))
-                if toc_segment is None:
-                    raise RuntimeError(f'Cannot locate TOC segment in "{ancestor}"')
                 
-                new_toc_segment = prefix_each_line(prefix_link_paths(toc, parent.parent.relative_to(ancestor.parent).as_posix() + '/'), toc_segment[1])
+                newline = ''
+                toc_segment = find_toc_segment(content, parent.relative_to(ancestor.parent))
+                if toc_segment is not None:
+                    toc_indent = toc_segment[1]
+                    toc_segment = slice(toc_segment.start(), toc_segment.end())
+                else:
+                    #TODO: appending is not the best way
 
-                new_content = content[:toc_segment.start()] + new_toc_segment + content[toc_segment.end():]
+                    print(f'Cannot find existing ToC segment in "{ancestor}", trying to append after the ToC')
+
+                    toc_segment = find_toc(content)
+                    if toc_segment is not None:
+                        toc_segment = slice(toc_segment.end(), toc_segment.end())
+                    else:
+                        print(f'Cannot find ToC in "{ancestor}", trying to append after the title')
+
+                        title_len = len(content.splitlines()[0])
+                        toc_segment = slice(title_len, title_len)
+                    toc_indent = toc_indent + '  '
+                    newline = '\n'
+                
+                new_toc_segment = newline + prefix_each_line(prefix_link_paths(toc, parent.parent.relative_to(ancestor.parent).as_posix() + '/'), toc_indent)
+
+                new_content = content[:toc_segment.start] + new_toc_segment + content[toc_segment.stop:]
 
                 f.seek(0)
                 f.truncate()
