@@ -8,9 +8,10 @@ def prefix_each_line(s, prefix):
 def encode_path(path):
     # Reserved characters: !#$&'()*+,/:;=?@[] %
     # Available in Windows filenames: !#$&'()+,;=@[] %
-    # Needed escape in VS Code: # %
+    # Needed escaping in VS Code: # %
     return (str(path)
-        .replace(' ', '%20').replace('#', '%23').replace('%', '%25')
+        .replace('%', '%25')  # must be first
+        .replace(' ', '%20').replace('#', '%23')
         .replace('\\', '/')  # not necessary, but we replace it for consistency
     )
 
@@ -30,7 +31,8 @@ def extract_toc(content):
     return re.search(r'^[-*] +\[[^\]]+\]\([^\)]+\.md\)[\S\s]*?(?=\n\n|^# |\Z)', content, re.MULTILINE)
 
 def find_toc_segment(content, path):
-    return re.search(rf'^(\s*)[-*] +\[[^\]]+\]\({re.escape(encode_path(path))}\).*(\n\1 +.*)*', content, re.MULTILINE)
+    pattern = rf'^(\s*)[-*] +\[[^\]]+\]\({re.escape(encode_path(path))}\).*(\n\1 +.*)*'
+    return re.search(pattern, content, re.MULTILINE)
 
 class ToC:
     def lift(self, path):
