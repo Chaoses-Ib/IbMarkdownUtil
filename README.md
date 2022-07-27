@@ -53,3 +53,35 @@ After lifting the ToC of A/B/C/README.md by executing `mdutil toc lift A/B/C/REA
       - ...
     - ...
     ```
+
+## Convert
+### From OneNote-Obsidian
+"OneNote-Obsidian" denotes notes that were copied from OneNote to Obsidian.
+
+#### To Obsidian
+Before:
+```md
+Hello world!
+
+This is a new line but not a new paragraph.
+
+## Title 2
+
+-   List item 1
+-   List item 2
+
+Goodbye!
+```
+
+After executing `mdutil conv oneob ob` (contents are provided via clipboard):
+```md
+Hello world!
+This is a new line but not a new paragraph.
+
+## Title 2
+- List item 1
+- List item 2
+Goodbye!
+```
+
+Note that images are not supported.

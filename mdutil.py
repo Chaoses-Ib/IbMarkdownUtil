@@ -101,5 +101,36 @@ def lift(path):
             f.truncate()
             f.write(new_content)
 
+@cli.group(help='Convert')
+def conv():
+    pass
+
+@conv.group(help='From OneNote-Obsidian note in the clipboard...')
+def oneob():
+    pass
+
+@oneob.command(help='To Obsidian note (images are not supported)')
+def ob():
+    import pyperclip
+
+    content = pyperclip.paste()
+
+    # Fix newlines
+    content = re.sub('\n\n', '\n', content)
+    content = re.sub(r'^#', '\n#', content, flags=re.MULTILINE)
+
+    # Fix lists
+    content = re.sub(r'^-   ', r'- ', content, flags=re.MULTILINE)
+    content = re.sub(r'^(\d)\.  ', r'\1. ', content, flags=re.MULTILINE)
+
+    # Titles
+    if re.search(r'^## ', content, flags=re.MULTILINE) is None:
+        content = re.sub(r'^#', '', content, flags=re.MULTILINE)
+
+    # Time markers
+    content = re.sub(r'^t(?:\d{6}|\d{4}|\d{2}|~)(?: \S+)?$', r'\n<!--\g<0>-->', content, flags=re.MULTILINE)
+
+    pyperclip.copy(content)
+
 if __name__ == '__main__':
     cli()
